@@ -3,6 +3,7 @@
 
   Keep in mind that your functions must still have and use a parameter for accepting all pokemon.
 */
+const { type } = require("os");
 const pokemon = require("./pokemon.js");
 const examplePokemon = require("./pokemon.js");
 // Do not change the line above.
@@ -36,7 +37,13 @@ const examplePokemon = require("./pokemon.js");
 ];
  */
 
-function getAllPokemonNames() {}
+function getAllPokemonNames(pokemon) {
+  if (pokemon.length === 1) {
+    throw `Error: There should ne more than one movie.`;
+  }
+  const allNames = pokemon.map((pokie) => pokie.name);
+  return allNames;
+}
 
 /**
  * checkIfAnyPokemonWeighsLessThan()
@@ -56,7 +63,14 @@ function getAllPokemonNames() {}
  *  checkIfAnyPokemonWeighsLessThan(pokemon, 18);
  *  //> false
  */
-function checkIfAnyPokemonWeighsLessThan() {}
+function checkIfAnyPokemonWeighsLessThan(pokemon, weight = 100) {
+  const weighted = pokemon.some((pokie) => {
+    if (pokie.weight < weight) {
+      return true;
+    }
+  });
+  return weighted;
+}
 
 /**
  * findByName()
@@ -74,7 +88,17 @@ function checkIfAnyPokemonWeighsLessThan() {}
       // clefable
     };
  */
-function findByName() {}
+function findByName(pokemon, name) {
+  const getName = pokemon.find((pokie) => {
+    if (pokie.pokeId === name) {
+      return pokie;
+    }
+  });
+  if (!getName) {
+    return null;
+  }
+  return getName;
+}
 
 /**
  * filterByType()
@@ -100,7 +124,15 @@ function findByName() {}
  *  filterByType(pokemon, "psychic")
  *  //> []
  */
-function filterByType() {}
+function filterByType(pokemon, type) {
+  const findByType = pokemon.filter((poke) => {
+    return poke.types.find(
+      (pokeType) => pokeType.type.name === type.toLowerCase()
+    ); //! .toLowerCase(), cause we know the type name is lowercarsed
+  });
+  return findByType;
+  //! Reduce
+}
 
 /**
  * checkMinBaseExperience()
@@ -117,16 +149,20 @@ function filterByType() {}
  *  //>  false
  */
 
-function checkMinBaseExperience() {}
+function checkMinBaseExperience(pokemon, baseExperience) {
+  const minExp = pokemon.every(
+    (pokie) => pokie.base_experience >= baseExperience
+  );
 
-
+  return minExp;
+}
 
 /**
  * findType()
  * -----------------------------
  * Returns an array of pokemon where the key is the name and the value is the FIRST type in the array of types. If the pokemon array is empty, throw an error
  * @param {Object[]} pokemon - An array of pokemon. See the `pokemon.js` file for an example of this array.
- * @returns {Boolean|Error} An array of pokemon || Error
+ * @returns {Object[]|Error} An array of pokemon || Error
  *
  * NOTE: You must use the .map() & find() methods.
  *
@@ -160,10 +196,27 @@ function checkMinBaseExperience() {}
     ]
  */
 
+const findType = (pokemon) => {
+  if (!pokemon.length) throw `Error: Add Pokemon`;
 
-const findType = () => {
-  
-}
+  // return pokemon.map((poke)=>{
+  //   let val = undefined
+  //   //! access the types
+
+  //   poke.types.find((inType)=>{
+  //     val = inType.type.name
+  //     return val
+  //   })
+  //   return {[poke.name]: val}
+  // })
+
+  return pokemon.map((pokie) => {
+    const slotOne = pokie.types.find((theType) => {
+      return theType.slot === 1;
+    });
+    return { [pokie.name]: slotOne.type.name };
+  });
+};
 
 module.exports = {
   getAllPokemonNames,
@@ -171,5 +224,5 @@ module.exports = {
   findByName,
   filterByType,
   checkMinBaseExperience,
-  findType
+  findType,
 };
